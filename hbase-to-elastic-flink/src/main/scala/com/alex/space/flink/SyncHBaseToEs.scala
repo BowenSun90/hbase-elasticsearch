@@ -1,13 +1,9 @@
 package com.alex.space.flink
 
-import com.alex.space.flink.core.HBaseTableInputFormat
-import com.alex.space.flink.elasticsearch.{ElasticSearchOutputFormat, ElasticsearchSinkFunction, RequestIndexer}
-import org.apache.flink.api.common.functions.RuntimeContext
+import com.alex.space.flink.elasticsearch.{ElasticSearchOutputFormat, ElasticSearchSinker}
+import com.alex.space.flink.hbase.HBaseTableInputFormat
 import org.apache.flink.api.scala.{ExecutionEnvironment, _}
 import org.apache.flink.configuration.Configuration
-import org.elasticsearch.action.index.IndexRequest
-import org.elasticsearch.client.Requests
-import org.elasticsearch.common.xcontent.XContentType
 
 /**
   * @author Alex
@@ -32,17 +28,7 @@ object SyncHBaseToEs {
           row.getField(0).toString
         }
       )
-      .output(new ElasticSearchOutputFormat(new ElasticsearchSinkFunction[String] {
-        def createIndexRequest(element: String): IndexRequest = {
-
-          Requests.indexRequest.index("test_table2").`type`("d").id(element).source("{\"age\": \"30\"}", XContentType.JSON)
-        }
-
-        override def process(element: String, ctx: RuntimeContext, requestIndexer: RequestIndexer): Unit = {
-          requestIndexer.add(createIndexRequest(element))
-        }
-      }
-      ))
+      .output(new ElasticSearchOutputFormat(new ElasticSearchSinker))
 
     println(env.getExecutionPlan)
     val result = env.execute("Scan Hbase").getAllAccumulatorResults

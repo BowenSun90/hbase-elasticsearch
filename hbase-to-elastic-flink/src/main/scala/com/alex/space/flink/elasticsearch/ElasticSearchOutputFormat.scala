@@ -90,7 +90,7 @@ class ElasticSearchOutputFormat[T](val elasticsearchSinkFunction: ElasticsearchS
     // This makes flush() blocking
     bulkProcessorBuilder.setConcurrentRequests(0)
 
-    bulkProcessorBuilder.setBulkActions(500)
+    bulkProcessorBuilder.setBulkActions(100)
     bulkProcessorBuilder.setBulkSize(new ByteSizeValue(1024))
     bulkProcessorBuilder.setFlushInterval(TimeValue.timeValueMillis(5000))
 

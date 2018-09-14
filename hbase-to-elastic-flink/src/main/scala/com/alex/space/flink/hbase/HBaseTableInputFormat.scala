@@ -30,7 +30,7 @@ class HBaseTableInputFormat(val tableName: String)
     val hConf = HBaseConfiguration.create()
     hConf.setInt("hbase.client.scanner.timeout.period", 6000000)
     hConf.set("hbase.zookeeper.quorum", configString("zookeeper.quorum"))
-    hConf.set("hbase.zookeeper.property.clientPort", configString("zookeeper.property.clientPort"))
+    hConf.set("hbase.zookeeper.property.clientPort", configString("zookeeper.clientPort"))
 
     try
       return new HTable(hConf, getTableName)
