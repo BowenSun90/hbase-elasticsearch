@@ -141,7 +141,7 @@ public class KeyValueGenerator {
           return String.valueOf(randomBoolValue());
         case Date:
           SimpleDateFormat sdf = new SimpleDateFormat(CommonConstants.DATE_FORMAT);
-          sdf.format(randomDateValue());
+          return sdf.format(randomDateValue());
         case StringArray:
           JSONArray strArray = new JSONArray();
           for (int i = 0; i < ThreadLocalRandom.current().nextInt(ARRAY_MAX_LENGTH); i++) {

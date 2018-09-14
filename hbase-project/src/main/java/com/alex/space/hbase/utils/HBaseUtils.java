@@ -73,6 +73,9 @@ public class HBaseUtils {
         conf.set(HBaseConstants.ZOOKEEPER_PORT,
             hBaseConfig.getProperty(HBaseConstants.ZOOKEEPER_PORT));
 
+        conf.setInt(HBaseConstants.SCAN_TIMEOUT,
+            Integer.parseInt(hBaseConfig.getProperty(HBaseConstants.SCAN_TIMEOUT)));
+
         connection = ConnectionFactory.createConnection(conf, pool);
       } catch (IOException e) {
         e.printStackTrace();

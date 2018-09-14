@@ -18,6 +18,11 @@ public interface HBaseConstants {
   String ZOOKEEPER_PORT = "hbase.zookeeper.property.clientPort";
 
   /**
+   * Scan timeout
+   */
+  String SCAN_TIMEOUT = "hbase.client.scanner.timeout.period";
+
+  /**
    * HBase默认添加列，最近更新时间
    */
   String DEFAULT_UPDATE_TIME = "lastModifyDate";

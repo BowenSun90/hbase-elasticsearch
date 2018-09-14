@@ -11,21 +11,20 @@ import org.slf4j.LoggerFactory
   * @author Alex
   *         Created by Alex on 2018/9/14.
   */
-class ElasticSearchSinker[T] extends ElasticsearchSinkFunction[T] {
+class ElasticSearchSinker(val indexName: String, val typeName: String) extends ElasticsearchSinkFunction[(String, String)] {
 
-  private val LOG = LoggerFactory.getLogger(classOf[ElasticSearchSinker[_]])
+  private val LOG = LoggerFactory.getLogger(classOf[ElasticSearchSinker])
 
-  def createIndexRequest(element: T): IndexRequest = {
+  def createIndexRequest(element: (String, String)): IndexRequest = {
     LOG.info("create index request " + element)
     Requests.indexRequest
-      .index("test_table2")
-      .`type`("d")
-      .id(element.toString)
-      .source("{\"age\": \"200\"}", XContentType.JSON)
-
+      .index(indexName)
+      .`type`(typeName)
+      .id(element._1)
+      .source(element._2, XContentType.JSON)
   }
 
-  override def process(element: T, ctx: RuntimeContext, requestIndexer: RequestIndexer): Unit = {
+  override def process(element: (String, String), ctx: RuntimeContext, requestIndexer: RequestIndexer): Unit = {
     requestIndexer.add(createIndexRequest(element))
   }
 

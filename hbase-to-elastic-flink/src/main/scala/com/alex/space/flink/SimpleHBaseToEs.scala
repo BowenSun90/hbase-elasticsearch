@@ -14,9 +14,9 @@ object SimpleHBaseToEs {
     val env = ExecutionEnvironment.createLocalEnvironment()
     env.setParallelism(1)
 
-    val tableName = "test_table"
+    val hbaseTable = "test_table"
 
-    env.createInput(new HBaseTableInputFormat(tableName))
+    env.createInput(new HBaseTableInputFormat(hbaseTable))
       .map(
         row => {
           row.getField(0).toString

@@ -153,6 +153,11 @@
       <version>${scala.build.version}</version>
     </dependency>
 
+    <dependency>
+      <groupId>com.alex.space</groupId>
+      <artifactId>hbase-elastic-common</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 
   <build>
