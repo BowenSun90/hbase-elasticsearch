@@ -16,7 +16,7 @@ class ElasticSearchSinker(val indexName: String, val typeName: String) extends E
   private val LOG = LoggerFactory.getLogger(classOf[ElasticSearchSinker])
 
   def createIndexRequest(element: (String, String)): IndexRequest = {
-    LOG.info("create index request " + element)
+    LOG.debug("create index request " + element)
     Requests.indexRequest
       .index(indexName)
       .`type`(typeName)

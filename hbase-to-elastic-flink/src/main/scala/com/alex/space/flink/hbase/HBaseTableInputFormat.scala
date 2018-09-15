@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory
 /**
   * @author Alex Created by Alex on 2018/9/12.
   */
-class HBaseTableInputFormat(val tableName: String)
+class HBaseTableInputFormat(val tableName: String, val batchSize: Int)
   extends TableInputFormat[Tuple2[String, Array[Cell]]] with Configable {
 
   private val LOG = LoggerFactory.getLogger(classOf[HBaseTableInputFormat])
@@ -41,7 +41,11 @@ class HBaseTableInputFormat(val tableName: String)
     null
   }
 
-  override protected def getScanner = new Scan
+  override protected def getScanner = {
+    val scan = new Scan
+    scan.setBatch(batchSize)
+    scan
+  }
 
   override protected def getTableName: String = this.tableName
 

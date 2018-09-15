@@ -21,28 +21,37 @@ object SyncHBaseToEs {
   def main(args: Array[String]): Unit = {
 
     val env = ExecutionEnvironment.getExecutionEnvironment
-//      .createLocalEnvironment()
+    //      .createLocalEnvironment()
     val conf = new Configuration()
     conf.setString("akka.client.timeout", "10min")
     env.getConfig.setGlobalJobParameters(conf)
 
     env.setParallelism(1)
 
-    val hbaseTable = "test_table"
-    val indexName = "test_table2"
-    val typeName = "d"
+    var hbaseTable = "test_table"
+    var indexName = "test_table2"
+    var typeName = "d"
+    var batchSize = 1000
 
-    env.createInput(new HBaseTableInputFormat(hbaseTable))
+    if (args.length == 4) {
+      hbaseTable = args(0)
+      indexName = args(1)
+      typeName = args(2)
+      batchSize = args(3).toInt
+    }
+
+    println(hbaseTable + "," + indexName + "," + typeName + "," + batchSize)
+
+    env.createInput(new HBaseTableInputFormat(hbaseTable, batchSize))
       .map(
         row => {
           (row.getField(0).toString, buildJson(row.f1))
         }
       )
-      .output(new ElasticSearchOutputFormat(new ElasticSearchSinker(indexName, typeName)))
+      .output(new ElasticSearchOutputFormat(batchSize, new ElasticSearchSinker(indexName, typeName)))
 
     println(env.getExecutionPlan)
-    val result = env.execute("Scan Hbase").getAllAccumulatorResults
-    println(result)
+    env.execute("Scan Hbase")
 
   }
 
