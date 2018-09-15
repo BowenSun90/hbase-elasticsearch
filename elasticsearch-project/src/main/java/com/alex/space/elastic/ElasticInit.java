@@ -74,21 +74,32 @@ public class ElasticInit {
 
     // Start test code
     ExecutorService insertPool = null, updatePool = null, selectPool = null;
-    if (insertThreadNum > 0) {
+    if (insertThreadNum > 0 && insertSize > 0) {
       insertPool = Executors.newFixedThreadPool(insertThreadNum);
-      insertPool.submit(new ElasticInsert(indexName, typeName, offset, insertSize, batchSize));
+      for (int i = 0; i < insertThreadNum; i++) {
+        int subInsertSize = insertSize / insertThreadNum;
+        int startOffset = offset + subInsertSize * i;
+        insertPool.submit(
+            new ElasticInsert(indexName, typeName, startOffset, subInsertSize, batchSize));
+      }
       insertPool.shutdown();
     }
 
-    if (updateThreadNum > 0) {
+    if (updateThreadNum > 0 && updateSize > 0) {
       updatePool = Executors.newFixedThreadPool(updateThreadNum);
-      updatePool.submit(new ElasticUpdate(indexName, typeName, offset, insertSize, batchSize));
+      for (int i = 0; i < updateThreadNum; i++) {
+        int subUpdateSize = updateSize / updateThreadNum;
+        updatePool.submit(new ElasticUpdate(indexName, typeName, offset, subUpdateSize, batchSize));
+      }
       updatePool.shutdown();
     }
 
-    if (selectThreadNum > 0) {
+    if (selectThreadNum > 0 && selectSize > 0) {
       selectPool = Executors.newFixedThreadPool(selectThreadNum);
-      selectPool.submit(new ElasticQuery(indexName, typeName, offset, insertSize, batchSize));
+      for (int i = 0; i < selectThreadNum; i++) {
+        int subSelectSize = selectSize / selectThreadNum;
+        selectPool.submit(new ElasticQuery(indexName, typeName, offset, subSelectSize, batchSize));
+      }
       selectPool.shutdown();
     }
 

@@ -26,7 +26,7 @@ object SyncHBaseToEs {
     conf.setString("akka.client.timeout", "10min")
     env.getConfig.setGlobalJobParameters(conf)
 
-    env.setParallelism(1)
+    env.setParallelism(2)
 
     var hbaseTable = "test_table"
     var indexName = "test_table2"
