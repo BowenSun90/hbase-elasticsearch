@@ -29,7 +29,6 @@ import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
@@ -223,27 +222,20 @@ public class ElasticUtils {
    * @param fields field list
    */
   public static void queryData(String index, String type, String[] showField, String value,
-      String... fields) {
+      String fields) {
 
-    QueryBuilder query = QueryBuilders.multiMatchQuery(value, fields);
+    QueryBuilder query = QueryBuilders.termQuery(fields, value);
 
     SearchResponse response = client.prepareSearch(index)
         .setTypes(type)
         .setQuery(query)
         .setFetchSource(showField, null)
-//        .setMinScore(8.5f)
+        .setMinScore(0.8f)
         .execute()
         .actionGet();
 
     SearchHits hits = response.getHits();
-    if (hits.totalHits > 0) {
-      for (SearchHit hit : hits) {
-        log.info("score:" + hit.getScore() + ":\t" + hit.getSource());
-      }
-    } else {
-      log.debug("搜到0条结果");
-    }
-
+    log.debug("搜到{}条结果", hits.totalHits);
   }
 
 }

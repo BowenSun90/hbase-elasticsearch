@@ -344,7 +344,9 @@ public class HBaseUtils {
         if (rows % 100 == 0) {
           sampleRows++;
           sampleCols += result.rawCells().length;
-          log.info("Sampling statistics...");
+          if (sampleRows % 55 == 0) {
+            log.info("Sampling statistics...");
+          }
         }
         rows++;
       }

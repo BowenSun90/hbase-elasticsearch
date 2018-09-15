@@ -50,15 +50,15 @@ public class ElasticInit {
       log.error("Offset out of bounds, max offset is 99999999");
     }
 
-    int insertThreadNum = Integer.parseInt(cmd.getOptionValue("itn", "0"));
-    int updateThreadNum = Integer.parseInt(cmd.getOptionValue("utn", "0"));
+    int insertThreadNum = Integer.parseInt(cmd.getOptionValue("itn", "1"));
+    int updateThreadNum = Integer.parseInt(cmd.getOptionValue("utn", "1"));
     int selectThreadNum = Integer.parseInt(cmd.getOptionValue("stn", "1"));
 
-    int insertSize = Integer.parseInt(cmd.getOptionValue("is", "10000"));
-    int updateSize = Integer.parseInt(cmd.getOptionValue("us", "10000"));
-    int selectSize = Integer.parseInt(cmd.getOptionValue("ss", "10000"));
+    int insertSize = Integer.parseInt(cmd.getOptionValue("is", "100000"));
+    int updateSize = Integer.parseInt(cmd.getOptionValue("us", "100000"));
+    int selectSize = Integer.parseInt(cmd.getOptionValue("ss", "100000"));
 
-    int batchSize = Integer.parseInt(cmd.getOptionValue("batch", "100"));
+    int batchSize = Integer.parseInt(cmd.getOptionValue("batch", "1000"));
     boolean deleteExist = Boolean.parseBoolean(cmd.getOptionValue("delete", "false"));
 
     log.info("Insert or update index name: {}, type name: {} . \n"

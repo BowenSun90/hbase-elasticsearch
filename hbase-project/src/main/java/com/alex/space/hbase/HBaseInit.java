@@ -27,17 +27,17 @@ public class HBaseInit {
 
   public static void main(String[] args) throws IOException, ParseException, InterruptedException {
     Options options = new Options();
-    options.addOption("table", "tableName", false, "table name, default: test_table");
-    options.addOption("cf", "columnFamily", false, "column family, default: d");
-    options.addOption("region", "regionNum", false, "region number, default: 10");
-    options.addOption("offset", "maxOffset", false, "max offset, max is 99999999, default: 1");
-    options.addOption("itn", "insertThreadNum", false, "insert thread number, default: 1");
-    options.addOption("utn", "updateThreadNum", false, "update thread number, default: 1");
-    options.addOption("stn", "selectThreadNum", false, "select thread number, default: 1");
-    options.addOption("is", "insertSize", false, "insert record size, default: 100000");
-    options.addOption("us", "updateSize", false, "update record size, default: 100000");
-    options.addOption("ss", "selectSize", false, "select record size, default: 100000");
-    options.addOption("batch", "batchSize", false, "batch record size, default: 1000");
+    options.addOption("table", "tableName", true, "table name, default: test_table");
+    options.addOption("cf", "columnFamily", true, "column family, default: d");
+    options.addOption("region", "regionNum", true, "region number, default: 10");
+    options.addOption("offset", "maxOffset", true, "max offset, max is 99999999, default: 1");
+    options.addOption("itn", "insertThreadNum", true, "insert thread number, default: 1");
+    options.addOption("utn", "updateThreadNum", true, "update thread number, default: 1");
+    options.addOption("stn", "selectThreadNum", true, "select thread number, default: 1");
+    options.addOption("is", "insertSize", true, "insert record size, default: 100000");
+    options.addOption("us", "updateSize", true, "update record size, default: 100000");
+    options.addOption("ss", "selectSize", true, "select record size, default: 100000");
+    options.addOption("batch", "batchSize", true, "batch record size, default: 1000");
 
     CommandLineParser parser = new DefaultParser();
     CommandLine cmd = parser.parse(options, args);
@@ -64,9 +64,9 @@ public class HBaseInit {
     log.info("Insert or update table: {}, column family: {}, region number: {} . \n"
             + "insertSize: {}, updateSize: {}, selectSize: {} . \n"
             + "insertThreadNum: {}, updateThreadNum: {}, selectThreadNum: {} . \n"
-            + "batchSize: {}",
+            + "batchSize: {}, offset: {}",
         tableName, cf, regionNum, insertSize, updateSize, selectSize,
-        insertThreadNum, updateThreadNum, selectThreadNum, batchSize);
+        insertThreadNum, updateThreadNum, selectThreadNum, batchSize, offset);
 
     // 初始化测试表，如果不存在创建
     // Rowkey预分区，根据RegionNum，将MAX_ID平均分成RegionNum段
