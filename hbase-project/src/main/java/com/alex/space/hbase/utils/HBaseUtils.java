@@ -109,9 +109,38 @@ public class HBaseUtils {
 
       HColumnDescriptor hColumnDescriptor = new HColumnDescriptor(columnFamily);
       desc.addFamily(hColumnDescriptor);
+      desc.setCompactionEnabled(false);
+      desc.setMemStoreFlushSize(128 * 1024 * 1024);
       admin.createTable(desc, splitKeys);
       log.info("Create table {}.", tableName);
     }
+
+    admin.close();
+  }
+
+  public void createTable(String tableName, String columnFamily, byte[][] splitKeys,
+      boolean deleteExists) throws IOException {
+    Admin admin = connection.getAdmin();
+    TableName name = TableName.valueOf(tableName);
+
+    if (admin.tableExists(name)) {
+      log.warn("Table {} exists.", name);
+      if (deleteExists) {
+        dropTable(tableName);
+      } else {
+        admin.close();
+        return;
+      }
+    }
+
+    HTableDescriptor desc = new HTableDescriptor(TableName.valueOf(tableName));
+
+    HColumnDescriptor hColumnDescriptor = new HColumnDescriptor(columnFamily);
+    desc.addFamily(hColumnDescriptor);
+    desc.setCompactionEnabled(false);
+    desc.setMemStoreFlushSize(128 * 1024 * 1024);
+    admin.createTable(desc, splitKeys);
+    log.info("Create table {}.", tableName);
 
     admin.close();
   }
@@ -341,12 +370,9 @@ public class HBaseUtils {
       int sampleRows = 0;
       int sampleCols = 0;
       for (Result result : rs) {
-        if (rows % 100 == 0) {
+        if (rows % 500 == 0) {
           sampleRows++;
           sampleCols += result.rawCells().length;
-          if (sampleRows % 99 == 0) {
-            log.info("Sampling statistics...");
-          }
         }
         rows++;
       }
