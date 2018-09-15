@@ -194,7 +194,7 @@ public class HBaseUtils {
       // Put into table
       table.put(puts);
       table.close();
-      log.info("Put table:{}, cf:{}, size:{} ", tableName, cf, batchDataList.size());
+      log.debug("Put table:{}, cf:{}, size:{} ", tableName, cf, batchDataList.size());
 
     } catch (Exception e) {
       log.error("batch put with exception: {}", e.getMessage());
@@ -246,6 +246,7 @@ public class HBaseUtils {
     try {
       TableName name = TableName.valueOf(tableName);
       Table table = connection.getTable(name);
+
       Get get = new Get(row.getBytes());
 
       Result rs = table.get(get);
@@ -256,6 +257,47 @@ public class HBaseUtils {
       table.close();
     } catch (Exception e) {
       e.printStackTrace();
+    }
+  }
+
+  public void batchGet(String tableName, String cf, List<BatchData> batchDataList) {
+    if (batchDataList == null || batchDataList.size() == 0) {
+      log.error("batch get with error params.");
+      return;
+    }
+
+    try {
+      TableName name = TableName.valueOf(tableName);
+      Table table = connection.getTable(name);
+      List<Get> gets = new ArrayList<>();
+
+      for (BatchData batchData : batchDataList) {
+        if (StringUtils.isEmpty(batchData.getRowKey())) {
+          log.error("batch get with error params.");
+          continue;
+        }
+
+        Get get = new Get(Bytes.toBytes(batchData.getRowKey()));
+
+        // create Get
+        if (batchData.getColumns() != null) {
+          for (int i = 0; i < batchData.getColumns().length; i++) {
+            get.addColumn(Bytes.toBytes(cf), Bytes.toBytes(batchData.getColumns()[i]));
+          }
+        } else {
+          get.addFamily(Bytes.toBytes(cf));
+        }
+        gets.add(get);
+      }
+
+      // Get into table
+      Result[] rs = table.get(gets);
+      log.debug("Result size: " + rs.length);
+      table.close();
+      log.debug("Get table:{}, cf:{}, size:{} ", tableName, cf, batchDataList.size());
+
+    } catch (Exception e) {
+      log.error("batch put with exception: {}", e.getMessage());
     }
   }
 
@@ -279,6 +321,39 @@ public class HBaseUtils {
       }
 
       table.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public void printScan(String tableName, String cf) {
+    try {
+      StopWatch stopWatch = new StopWatch();
+      stopWatch.start();
+      TableName name = TableName.valueOf(tableName);
+
+      Table table = connection.getTable(name);
+      Scan scan = new Scan();
+      scan.addFamily(Bytes.toBytes(cf));
+      ResultScanner rs = table.getScanner(scan);
+
+      int rows = 0;
+      int sampleRows = 0;
+      int sampleCols = 0;
+      for (Result result : rs) {
+        if (rows % 100 == 0) {
+          sampleRows++;
+          sampleCols += result.rawCells().length;
+          log.info("Sampling statistics...");
+        }
+        rows++;
+      }
+
+      table.close();
+      stopWatch.stop();
+
+      log.info("Total rows: {}, avg columns: {}, time: {}s",
+          rows, sampleCols / sampleRows, stopWatch.getTime() / 1000.0);
     } catch (IOException e) {
       e.printStackTrace();
     }

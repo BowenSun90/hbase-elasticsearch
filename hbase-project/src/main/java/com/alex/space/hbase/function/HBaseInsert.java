@@ -30,6 +30,7 @@ public class HBaseInsert extends BaseHBaseAction {
     StopWatch stopWatch = new StopWatch();
     int avgTime = 0;
 
+    int optCount = 0;
     List<BatchData> batchDataList = new ArrayList<>(batchSize);
     for (int i = maxOffset; i < maxOffset + insertSize; i++) {
       BatchData batchData = DataFactory.generateBatchData(i);
@@ -37,6 +38,7 @@ public class HBaseInsert extends BaseHBaseAction {
 
       // 批量插入
       if (batchDataList.size() == batchSize) {
+        optCount++;
         stopWatch.start();
 
         hBaseUtils.batchPut(tableName, cf, batchDataList);
@@ -46,14 +48,14 @@ public class HBaseInsert extends BaseHBaseAction {
 
         // 计算平均时常
         avgTime += stopWatch.getTime();
-        if (i % 20 == 0 && i != 0) {
+        if (optCount % 20 == 0 && optCount != 0) {
           log.info("Avg insert " + batchSize + " time: " + avgTime / 20.0 / 1000.0 + "s.");
           avgTime = 0;
         }
         stopWatch = new StopWatch();
       }
 
-      log.info("Put: " + i + "[" + batchData.getRowKey() + "]");
+      log.debug("Put: " + i + "[" + batchData.getRowKey() + "]");
     }
 
     if (batchDataList.size() != 0) {

@@ -3,6 +3,7 @@ package com.alex.space.hbase;
 import com.alex.space.common.CommonConstants;
 import com.alex.space.hbase.function.HBaseInsert;
 import com.alex.space.hbase.function.HBaseSelect;
+import com.alex.space.hbase.function.HBaseStatistics;
 import com.alex.space.hbase.function.HBaseUpdate;
 import com.alex.space.hbase.utils.HBaseUtils;
 import java.io.IOException;
@@ -51,14 +52,14 @@ public class HBaseInit {
     }
 
     int insertThreadNum = Integer.parseInt(cmd.getOptionValue("itn", "1"));
-    int updateThreadNum = Integer.parseInt(cmd.getOptionValue("utn", "0"));
-    int selectThreadNum = Integer.parseInt(cmd.getOptionValue("stn", "0"));
+    int updateThreadNum = Integer.parseInt(cmd.getOptionValue("utn", "1"));
+    int selectThreadNum = Integer.parseInt(cmd.getOptionValue("stn", "1"));
 
-    int insertSize = Integer.parseInt(cmd.getOptionValue("is", "10000"));
-    int updateSize = Integer.parseInt(cmd.getOptionValue("us", "10000"));
-    int selectSize = Integer.parseInt(cmd.getOptionValue("ss", "10000"));
+    int insertSize = Integer.parseInt(cmd.getOptionValue("is", "100000"));
+    int updateSize = Integer.parseInt(cmd.getOptionValue("us", "100000"));
+    int selectSize = Integer.parseInt(cmd.getOptionValue("ss", "100000"));
 
-    int batchSize = Integer.parseInt(cmd.getOptionValue("batch", "100"));
+    int batchSize = Integer.parseInt(cmd.getOptionValue("batch", "1000"));
 
     log.info("Insert or update table: {}, column family: {}, region number: {} . \n"
             + "insertSize: {}, updateSize: {}, selectSize: {} . \n"
@@ -89,13 +90,13 @@ public class HBaseInit {
 
     if (updateThreadNum > 0) {
       updatePool = Executors.newFixedThreadPool(updateThreadNum);
-      updatePool.submit(new HBaseUpdate(tableName, cf, offset, insertSize, batchSize));
+      updatePool.submit(new HBaseUpdate(tableName, cf, offset, updateSize, batchSize));
       updatePool.shutdown();
     }
 
     if (selectThreadNum > 0) {
       selectPool = Executors.newFixedThreadPool(selectThreadNum);
-      selectPool.submit(new HBaseSelect(offset));
+      selectPool.submit(new HBaseSelect(tableName, cf, offset, selectSize, batchSize));
       selectPool.shutdown();
     }
 
@@ -104,6 +105,9 @@ public class HBaseInit {
         (selectPool != null && !selectPool.isTerminated())) {
       Thread.sleep(10000);
     }
+
+    HBaseStatistics statistics = new HBaseStatistics(tableName, cf);
+    statistics.printStatistics();
 
     System.exit(0);
 
