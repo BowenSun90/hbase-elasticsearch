@@ -51,8 +51,8 @@ public class HBaseUpdate extends BaseHBaseAction {
 
         // 计算平均时常
         avgTime += stopWatch.getTime();
-        if (optCount % 20 == 0 && optCount != 0) {
-          log.info("Avg update " + batchSize + " time: " + avgTime / 20.0 / 1000.0 + "s.");
+        if (optCount % 50 == 0 && optCount != 0) {
+          log.info("Avg update " + batchSize + " time: " + avgTime / 50.0 / 1000.0 + "s.");
           avgTime = 0;
         }
         stopWatch = new StopWatch();

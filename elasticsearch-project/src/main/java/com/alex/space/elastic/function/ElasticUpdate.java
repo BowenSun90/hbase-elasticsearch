@@ -37,8 +37,8 @@ public class ElasticUpdate extends BaseElasticAction {
 
       // 计算平均插入时间
       avgTime += stopWatch.totalTime().getMillis();
-      if (i % 20 == 0 && i != 0) {
-        log.info("Avg update " + batchSize + " time: " + avgTime / 20.0 / 1000.0 + "s.");
+      if (i % 50 == 0 && i != 0) {
+        log.info("Avg update " + batchSize + " time: " + avgTime / 50.0 / 1000.0 + "s.");
         avgTime = 0;
       }
       stopWatch = new StopWatch();

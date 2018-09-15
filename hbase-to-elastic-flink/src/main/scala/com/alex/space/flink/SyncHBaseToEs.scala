@@ -20,7 +20,8 @@ object SyncHBaseToEs {
 
   def main(args: Array[String]): Unit = {
 
-    val env = ExecutionEnvironment.createLocalEnvironment()
+    val env = ExecutionEnvironment.getExecutionEnvironment
+//      .createLocalEnvironment()
     val conf = new Configuration()
     conf.setString("akka.client.timeout", "10min")
     env.getConfig.setGlobalJobParameters(conf)

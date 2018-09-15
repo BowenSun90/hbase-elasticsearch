@@ -31,7 +31,7 @@ object App {
 
       def createIndexRequest(element: String): IndexRequest = {
 
-        Requests.indexRequest.index("test_table").`type`("d").id(element).source("{\"age\": \"30\"}", XContentType.JSON)
+        Requests.indexRequest.index("test_table2").`type`("d").id(element).source("{\"age\": \"30\"}", XContentType.JSON)
       }
 
       override def process(element: String, ctx: RuntimeContext, requestIndexer: RequestIndexer): Unit = {
