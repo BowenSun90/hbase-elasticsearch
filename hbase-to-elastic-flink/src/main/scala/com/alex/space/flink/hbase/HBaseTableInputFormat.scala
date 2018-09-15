@@ -28,7 +28,7 @@ class HBaseTableInputFormat(val tableName: String, val batchSize: Int)
   private def createTable(): HTable = {
     LOG.info("Initializing HBaseConfiguration")
     val hConf = HBaseConfiguration.create()
-    hConf.setInt("hbase.client.scanner.timeout.period", 6000000)
+    hConf.setInt("hbase.client.scanner.timeout.period", configInt("scanner.timeout.period"))
     hConf.set("hbase.zookeeper.quorum", configString("zookeeper.quorum"))
     hConf.set("hbase.zookeeper.property.clientPort", configString("zookeeper.clientPort"))
 
@@ -41,7 +41,7 @@ class HBaseTableInputFormat(val tableName: String, val batchSize: Int)
     null
   }
 
-  override protected def getScanner = {
+  override protected def getScanner: Scan = {
     val scan = new Scan
     scan.setBatch(batchSize)
     scan

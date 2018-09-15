@@ -98,8 +98,8 @@ class ElasticSearchOutputFormat[T](val batchSize: Int, val elasticsearchSinkFunc
     bulkProcessorBuilder.setConcurrentRequests(0)
 
     bulkProcessorBuilder.setBulkActions(batchSize)
-    bulkProcessorBuilder.setBulkSize(new ByteSizeValue(1024, ByteSizeUnit.KB))
-    bulkProcessorBuilder.setFlushInterval(TimeValue.timeValueMillis(10000))
+    bulkProcessorBuilder.setBulkSize(new ByteSizeValue(configInt("bulk.size.kb"), ByteSizeUnit.KB))
+    bulkProcessorBuilder.setFlushInterval(TimeValue.timeValueMillis(configInt("bulk.flush.interval")))
 
     bulkProcessor = bulkProcessorBuilder.build
     requestIndexer = new BulkProcessorIndexer(bulkProcessor)
