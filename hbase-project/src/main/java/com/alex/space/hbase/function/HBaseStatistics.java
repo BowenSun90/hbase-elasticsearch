@@ -1,5 +1,6 @@
 package com.alex.space.hbase.function;
 
+import com.alex.space.hbase.hfile.ClientSideScanner;
 import com.alex.space.hbase.utils.HBaseUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,8 +19,16 @@ public class HBaseStatistics {
   }
 
   public void printStatistics() {
-    HBaseUtils hBaseUtils = HBaseUtils.getInstance();
-    hBaseUtils.printScan(tableName, cf);
+    try {
+
+      HBaseUtils hBaseUtils = HBaseUtils.getInstance();
+      hBaseUtils.printScan(tableName, cf);
+
+      ClientSideScanner clientSideScanner = new ClientSideScanner();
+      clientSideScanner.tableScan(tableName, cf);
+    } catch (Exception e) {
+      log.error(e.getMessage());
+    }
   }
 
 }

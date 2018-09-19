@@ -18,6 +18,16 @@ public interface HBaseConstants {
   String ZOOKEEPER_PORT = "hbase.zookeeper.property.clientPort";
 
   /**
+   * HBase root dir
+   */
+  String ROOT_DIR = "hbase.rootdir";
+
+  /**
+   * HBase default filesystem
+   */
+  String DEFAULT_FS = "hbase.fs.defaultFS";
+
+  /**
    * Scan timeout
    */
   String SCAN_TIMEOUT = "hbase.client.scanner.timeout.period";
