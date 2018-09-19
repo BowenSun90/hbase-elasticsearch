@@ -4,7 +4,9 @@ import com.alex.space.hbase.config.HBaseConfig;
 import com.alex.space.hbase.config.HBaseConstants;
 import com.alex.space.hbase.model.BatchData;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -479,11 +481,21 @@ public class HBaseUtils {
   }
 
   private void printlnCell(Cell cell) {
-    log.info(Bytes.toString(CellUtil.cloneRow(cell)) + " ");
-    log.info(Bytes.toString(CellUtil.cloneFamily(cell)) + ":");
-    log.info(Bytes.toString(CellUtil.cloneQualifier(cell)) + " ");
-    log.info(Bytes.toString(CellUtil.cloneValue(cell)));
-    log.info(cell.getTimestamp() + " ");
+    HBaseUtils.printCell(null, cell);
+  }
+
+  public static void printCell(String rowKey, Cell cell) {
+    if (StringUtils.isEmpty(rowKey)) {
+      rowKey = Bytes.toString(CellUtil.cloneRow(cell));
+    }
+    String cf = Bytes.toString(CellUtil.cloneFamily(cell));
+    String qualifier = Bytes.toString(CellUtil.cloneQualifier(cell));
+    String value = Bytes.toString(CellUtil.cloneValue(cell));
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+
+    log.debug("Row: {}, {}:{} {}, {}", rowKey, cf, qualifier, value,
+        sdf.format(new Date(cell.getTimestamp())));
+
   }
 
 }
