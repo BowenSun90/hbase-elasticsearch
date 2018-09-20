@@ -64,9 +64,8 @@ public class ClientSideScanner {
       connection = ConnectionFactory.createConnection(conf, pool);
 
       scan = new Scan();
-      scan.setBatch(100);
+      scan.setBatch(1000);
       scan.setCacheBlocks(false);
-
 
     } catch (Exception e) {
       log.error(e.getMessage());
