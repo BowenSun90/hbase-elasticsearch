@@ -22,9 +22,11 @@ object SyncHBase {
 
     val env = ExecutionEnvironment
       .createLocalEnvironment()
-//      .getExecutionEnvironment
+    //      .getExecutionEnvironment
     val conf = new Configuration()
     conf.setString("akka.client.timeout", "10min")
+    conf.setString("akka.ask.timeout", "10000s")
+    conf.setString("akka.lookup.timeout", "100s")
     env.getConfig.setGlobalJobParameters(conf)
 
     env.setParallelism(1)

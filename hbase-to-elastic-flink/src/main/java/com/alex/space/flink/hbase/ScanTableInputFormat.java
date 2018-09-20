@@ -101,8 +101,11 @@ public class ScanTableInputFormat extends RichInputFormat<RowData, ScanTableInpu
       conf.set("hbase.rootdir", "hdfs://namenode01.td.com/hbase");
       conf.set("fs.defaultFS", "hdfs://namenode01.td.com");
 
+      conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
+
       ExecutorService pool = Executors.newScheduledThreadPool(10);
       Connection connection = ConnectionFactory.createConnection(conf, pool);
+
 
       tableName = TableName.valueOf(tableNameStr);
       table = connection.getTable(tableName);
