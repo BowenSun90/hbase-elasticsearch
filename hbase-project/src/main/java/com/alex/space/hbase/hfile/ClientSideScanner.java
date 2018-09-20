@@ -59,6 +59,8 @@ public class ClientSideScanner {
       conf.set("hbase.rootdir", hBaseConfig.getProperty(HBaseConstants.ROOT_DIR));
       conf.set("fs.defaultFS", hBaseConfig.getProperty(HBaseConstants.DEFAULT_FS));
 
+      conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
+
       connection = ConnectionFactory.createConnection(conf, pool);
 
       scan = new Scan();
@@ -98,6 +100,7 @@ public class ClientSideScanner {
   public void regionScan(FileSystem fs, Path root, HTableDescriptor htd, HRegionInfo hRegionInfo)
       throws Exception {
 
+    log.info("Scan region: {}", hRegionInfo.getRegionNameAsString());
     ClientSideRegionScanner scanner =
         new ClientSideRegionScanner(
             conf,
@@ -110,12 +113,12 @@ public class ClientSideScanner {
 
     Result result;
     while ((result = scanner.next()) != null) {
-      if (rows % 500 == 0) {
+      if (rows % 100 == 0) {
         sampleRows++;
         sampleCols += result.rawCells().length;
       }
       rows++;
-//      printScanResult(result);
+      printScanResult(result);
     }
 
     scanner.close();
