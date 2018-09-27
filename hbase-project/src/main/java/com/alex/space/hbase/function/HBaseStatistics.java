@@ -18,17 +18,23 @@ public class HBaseStatistics {
     this.cf = cf;
   }
 
-  public void printStatistics() {
+  public void printStatistics1() {
     try {
 
       HBaseUtils hBaseUtils = HBaseUtils.getInstance();
       hBaseUtils.printScan(tableName, cf);
 
+    } catch (Exception e) {
+      log.error(e.getMessage());
+    }
+  }
+
+  public void printStatistics2() {
+    try {
       ClientSideScanner clientSideScanner = new ClientSideScanner();
       clientSideScanner.tableScan(tableName, cf);
     } catch (Exception e) {
       log.error(e.getMessage());
     }
   }
-
 }

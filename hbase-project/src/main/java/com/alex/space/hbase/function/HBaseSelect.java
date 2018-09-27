@@ -31,35 +31,40 @@ public class HBaseSelect extends BaseHBaseAction {
    */
   @Override
   public void run() {
-    StopWatch stopWatch = new StopWatch();
-    int avgTime = 0;
 
-    List<BatchData> batchDataList = new ArrayList<>(batchSize);
-    int optCount = 0;
+    try {
+      StopWatch stopWatch = new StopWatch();
+      int avgTime = 0;
 
-    for (int i = 0; i < insertSize; i++) {
-      int randomId = ThreadLocalRandom.current().nextInt(maxOffset);
-      BatchData batchData = DataFactory.generateSelectData(randomId);
-      batchDataList.add(batchData);
+      List<BatchData> batchDataList = new ArrayList<>(batchSize);
+      int optCount = 0;
 
-      if (batchDataList.size() == batchSize) {
-        optCount++;
-        stopWatch.start();
-        hBaseUtils.batchGet(tableName, cf, batchDataList);
+      for (int i = 0; i < insertSize; i++) {
+        int randomId = ThreadLocalRandom.current().nextInt(maxOffset);
+        BatchData batchData = DataFactory.generateSelectData(randomId);
+        batchDataList.add(batchData);
 
-        batchDataList.clear();
-        stopWatch.stop();
+        if (batchDataList.size() == batchSize) {
+          optCount++;
+          stopWatch.start();
+          hBaseUtils.batchGet(tableName, cf, batchDataList);
 
-        // 计算平均时常
-        avgTime += stopWatch.getTime();
-        if (optCount % 50 == 0 && optCount != 0) {
-          log.info("Avg select " + batchSize + " time: " + avgTime / 50.0 / 1000.0 + "s.");
-          avgTime = 0;
+          batchDataList.clear();
+          stopWatch.stop();
+
+          // 计算平均时常
+          avgTime += stopWatch.getTime();
+          if (optCount % 50 == 0 && optCount != 0) {
+            log.info("Avg select " + batchSize + " time: " + avgTime / 50.0 / 1000.0 + "s.");
+            avgTime = 0;
+          }
+          stopWatch = new StopWatch();
         }
-        stopWatch = new StopWatch();
-      }
 
-      log.debug("Get: " + i + "[" + RowKeyUtils.buildNumberRowkey(randomId) + "]");
+        log.debug("Get: " + i + "[" + RowKeyUtils.buildNumberRowkey(randomId) + "]");
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
     }
 
   }
