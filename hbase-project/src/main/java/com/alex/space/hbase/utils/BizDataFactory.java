@@ -8,6 +8,7 @@ import com.alex.space.hbase.model.BatchData;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,40 +21,91 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class BizDataFactory {
 
-  static Map<String, List<String>> keyMap = new HashMap<String, List<String>>() {
+  private static Map<String, List<String>> keyMap = new HashMap<String, List<String>>() {
     {
       put(DataTypeEnum.String.name(), Arrays.asList("UID", "VipLevel", "Counter1", "TL1", "TL2"));
       put(DataTypeEnum.Number.name(), Arrays.asList("Tel", "TotalValues"));
-      put(DataTypeEnum.Bool.name(), Arrays.asList("IsVip"));
-      put(DataTypeEnum.Date.name(), Arrays.asList("RegisterDate"));
-      put(DataTypeEnum.StringArray.name(), Arrays.asList("PurchaseBrand"));
-      put(DataTypeEnum.NumberArray.name(), Arrays.asList("ProdQuantities"));
-      put(DataTypeEnum.BoolArray.name(), Arrays.asList("BA"));
-      put(DataTypeEnum.Json.name(), Arrays.asList("Address"));
+      put(DataTypeEnum.Bool.name(), Arrays.asList("IsVip", "Man"));
+      put(DataTypeEnum.Date.name(), Arrays.asList("RegisterDate", "LoginDate"));
+      put(DataTypeEnum.StringArray.name(), Arrays.asList("PurchaseBrand", "ProdName"));
+      put(DataTypeEnum.NumberArray.name(), Arrays.asList("ProdQuantities", "Quantities"));
+      put(DataTypeEnum.BoolArray.name(), Arrays.asList("BA", "BA2"));
+      put(DataTypeEnum.Json.name(), Arrays.asList("Address", "Add2"));
     }
   };
 
-  static Map<String, List<String>> valueMap = new HashMap<String, List<String>>() {
+  private static Map<String, List<String>> valueMap = new HashMap<String, List<String>>() {
     {
-      put("VipLevel", Arrays.asList("Gold", "Silver", "Bronze", "Platinum", ""));
-      put("Counter1", Arrays.asList("{\"A\":1,\"B\":2 }}", "{\"A\":1,\"C\":3}", ""));
-      put("TL1", Arrays.asList(
-          "{\"2018-01-01\":[1,2,3],\"2018-01-02\":[5,6]}",
-          "{\"2018-01-03\":[1,2,3]}", ""));
-      put("TL2", Arrays.asList(
-          "{\"2018-01-01\":[{\"A\":1,\"B\":2}],\"2018-01-02\":[{\"C\":3},{\"A\":4}]}",
-          "{\"2018-01-03\":[{\"A\":1}],\"2018-01-04\":[{\"C\":3}]}", ""));
-      put("Tel", Arrays.asList("13900000000", "13500000000", "13700000000", ""));
-      put("TotalValues", Arrays.asList("1", "2", "3", "4", "5", "6", "7", ""));
-      put("IsVip", Arrays.asList("True", "False", ""));
-      put("RegisterDate", Arrays.asList("2018-01-01", "2018-01-02", "2018-01-03", ""));
-      put("PurchaseBrand", Arrays.asList("BrandA", "BrandB", "BrandC", ""));
-      put("ProdQuantities", Arrays.asList("100", "200", "300", "400", ""));
-      put("Address", Arrays.asList(
+      put("VipLevel", Arrays.asList("",
+          "Gold", "Silver", "Bronze", "Platinum"));
+      put("Counter1", Arrays.asList("",
+          "{\"A\":1,\"B\":2}",
+          "{\"A\":1,\"C\":3}",
+          "{\"A\":1,\"B\":2,\"C\":3}",
+          "{\"A\":1,\"B\":2,\"C\":3, \"D\":4}",
+          "{\"B\":2,\"C\":3, \"D\":4}",
+          "{\"D\":4,\"E\":5}"));
+      put("TL1", Arrays.asList("",
+          "{\"2018-09-10\":[1,2],\"2018-09-20\":[3,4]}",
+          "{\"2018-09-20\":[3,4],\"2018-09-30\":[5,6]}",
+          "{\"2018-09-10\":[1,2],\"2018-09-20\":[3,4],\"2018-09-30\":[5,6]}",
+          "{\"2018-09-30\":[5,6]}",
+          "{\"2018-09-30\":[5,6], \"2018-10-07\": [105, 115]}",
+          "{\"2018-09-30\":[5,6],\"2018-10-07\":[105,115],\"2018-10-09\":[105,1150]}"));
+      put("TL2", Arrays.asList("",
+          "{\"2018-09-01\":[{\"A\":1}],\"2018-09-20\":[{\"C\":3,\"D\":4}],\"2018-09-30\":[{\"A\":5,\"C\":6}]}",
+          "{\"2018-09-01\":[{\"A\":1,\"B\":2}],\"2018-09-20\":[{\"C\":3,\"D\":4}]}",
+          "{\"2018-09-20\":[{\"C\":3,\"D\":4}],\"2018-09-30\":[{\"A\":5,\"C\":6}]}",
+          "{\"2018-09-30\":[{\"A\":5,\"C\":6}]}",
+          "{\"2018-09-30\":[{\"A\":5,\"C\":6}],\"2018-10-07\":[{\"B\":5,\"E\":105}]}",
+          "{\"2018-10-07\":[{\"B\":5}],\"2018-10-09\":[{\"A\":5,\"E\":105},{\"B\":5,\"A\":105}]}"));
+      put("Tel", Arrays.asList("",
+          "13900000000", "13500000000", "13700000000", "18500000000", "13100000000",
+          "13300000000", "18800000000", "17300000000", "18300000000", "13000000000"));
+      put("TotalValues", Arrays.asList("",
+          "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "100", "200", "300", "400", "500"));
+      put("IsVip", Arrays.asList("",
+          "true", "false"));
+      put("Man", Arrays.asList("",
+          "true", "false"));
+      put("RegisterDate", Arrays.asList("",
+          "2018-01-01", "2018-01-02", "2018-01-03", "2018-01-04",
+          "2018-09-01", "2018-09-10", "2018-09-20", "2018-09-30",
+          "2018-10-01", "2018-10-02", "2018-10-03", curDate()));
+      put("LoginDate", Arrays.asList("",
+          "2018-01-01", "2018-01-02", "2018-01-03", "2018-01-04",
+          "2018-09-01", "2018-09-10", "2018-09-20", "2018-09-30",
+          "2018-10-01", "2018-10-02", "2018-10-03", curDate()));
+      put("PurchaseBrand", Arrays.asList("", "[]",
+          "[\"BrandA\",\"BrandB\"]",
+          "[\"BrandB\"]",
+          "[\"BrandC\",\"BrandA\"]",
+          "[\"BrandD\"]",
+          "[\"BrandE\",\"BrandA\"]",
+          "[\"BrandE\",\"BrandF\"]"));
+      put("ProdName", Arrays.asList("", "[]",
+          "[\"AAA\",\"BBB\"]",
+          "[\"AAA\"]",
+          "[\"AAA\",\"CCC\"]",
+          "[\"BBB\"]",
+          "[\"CCC\",\"AAA\"]",
+          "[\"BBB\",\"CCC\"]"));
+      put("ProdQuantities", Arrays.asList("", "[]",
+          "[100, 200]", "[200,300]", "[300]", "[400,500,600]", "[10,105,11]", "[105,0]"));
+      put("Quantities", Arrays.asList("", "[]",
+          "[100, 200]", "[200,300]", "[300]", "[400,500,600]", "[10,105,11]", "[105,0]"));
+      put("Address", Arrays.asList("", "{}",
           "{\"value\":\"北京市朝阳区265号\",\"province\":\"北京市\",\"city\":\"北京市\"}",
-          "{\"value\":\"浙江省朝阳区265号\",\"province\":\"浙江省\",\"city\":\"杭州市\"}", ""));
-      put("BA", Arrays.asList(""));
-
+          "{\"value\":\"浙江省杭州市朝阳区265号\",\"province\":\"浙江省\",\"city\":\"杭州市\"}",
+          "{\"value\":\"辽宁省朝阳市西城区265号\",\"province\":\"辽宁省\",\"city\":\"朝阳市\"}"));
+      put("Add2", Arrays.asList("", "{}",
+          "{\"value\":\"北京市朝阳区265号\",\"province\":\"北京市\",\"city\":\"北京市\"}",
+          "{\"value\":\"浙江省杭州市朝阳区265号\",\"province\":\"浙江省\",\"city\":\"杭州市\"}",
+          "{\"value\":\"辽宁省朝阳市西城区265号\",\"province\":\"辽宁省\",\"city\":\"朝阳市\"}"));
+      put("BA", Arrays.asList("", "[]",
+          "[true]", "[true,false]"));
+      put("BA2", Arrays.asList("", "[]",
+          "[true]", "[true,false]"));
     }
   };
 
@@ -67,6 +119,11 @@ public class BizDataFactory {
     return valueList.get(ThreadLocalRandom.current().nextInt(valueList.size()));
   }
 
+  private static String curDate() {
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    return sdf.format(new Date());
+  }
+
   /**
    * 生成随机数据
    *
@@ -74,7 +131,7 @@ public class BizDataFactory {
    */
   public static BatchData generateBatchData(int offset) {
     // 每次随机插入列的数量，10～20随机
-    int columnNum = ThreadLocalRandom.current().nextInt(1, 4);
+    int columnNum = ThreadLocalRandom.current().nextInt(1, 5);
 
     String[] columns = new String[columnNum];
     String[] values = new String[columnNum];

@@ -39,15 +39,15 @@ public class HBaseSimulator {
     // 参数初始化
     String tableName = cmd.getOptionValue("table", "c1_trait");
     String cf = cmd.getOptionValue("cf", "d");
-    int regionNum = Integer.parseInt(cmd.getOptionValue("region", "2"));
+    int regionNum = Integer.parseInt(cmd.getOptionValue("region", "10"));
     int offset = Integer.parseInt(cmd.getOptionValue("offset", "1"));
     if (offset > CommonConstants.MAX_OFFSET) {
       log.error("Offset out of bounds, max offset is 99999999");
     }
 
-    int insertThreadNum = Integer.parseInt(cmd.getOptionValue("itn", "2"));
-    int insertSize = Integer.parseInt(cmd.getOptionValue("is", "100"));
-    int batchSize = Integer.parseInt(cmd.getOptionValue("batch", "10"));
+    int insertThreadNum = Integer.parseInt(cmd.getOptionValue("itn", "3"));
+    int insertSize = Integer.parseInt(cmd.getOptionValue("is", "100000"));
+    int batchSize = Integer.parseInt(cmd.getOptionValue("batch", "1000"));
 
     log.info("Insert or update table: {}, column family: {}, region number: {} . \n"
             + "insertSize: {} . \n"
