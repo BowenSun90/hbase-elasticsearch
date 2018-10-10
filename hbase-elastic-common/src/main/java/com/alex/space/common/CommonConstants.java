@@ -15,12 +15,12 @@ public interface CommonConstants {
   /**
    * 同一类型的列数量
    */
-  int COLUMN_MAX_NUMBER = 5;
+  int COLUMN_MAX_NUMBER = 100;
 
   /**
    * Json类型的列数量
    */
-  int JSON_MAX_NUMBER = 1;
+  int JSON_MAX_NUMBER = 50;
 
   /**
    * Date format

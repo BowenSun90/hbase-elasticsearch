@@ -43,9 +43,9 @@ public class HBaseInit {
     CommandLine cmd = parser.parse(options, args);
 
     // 参数初始化
-    String tableName = cmd.getOptionValue("table", "c1_trait");
+    String tableName = cmd.getOptionValue("table", "c0_trait");
     String cf = cmd.getOptionValue("cf", "d");
-    int regionNum = Integer.parseInt(cmd.getOptionValue("region", "2"));
+    int regionNum = Integer.parseInt(cmd.getOptionValue("region", "100"));
     int offset = Integer.parseInt(cmd.getOptionValue("offset", "1"));
     if (offset > CommonConstants.MAX_OFFSET) {
       log.error("Offset out of bounds, max offset is 99999999");

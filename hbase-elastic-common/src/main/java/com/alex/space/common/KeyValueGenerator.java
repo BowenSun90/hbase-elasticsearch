@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.concurrent.ThreadLocalRandom;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
@@ -19,12 +20,43 @@ import org.codehaus.jettison.json.JSONObject;
 @Slf4j
 public class KeyValueGenerator {
 
-  private static char[] CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
+  private static char[] CHARS = "abcdefghijklmnopqrstuvwxyz"
       .toCharArray();
 
-  private static char[] SHORT_CHARS = "abc".toCharArray();
+  private static char[] SHORT_CHARS = "abcd".toCharArray();
 
   private static int ARRAY_MAX_LENGTH = 5;
+
+  private static City[] cities = {
+      new City("北京市", "北京市"),
+      new City("天津市", "天津市"),
+      new City("重庆市", "重庆市"),
+      new City("广东省", "广州市"),
+      new City("广东省", "深圳市"),
+      new City("辽宁省", "沈阳市"),
+      new City("辽宁省", "大连市"),
+      new City("江苏省", "南京市"),
+      new City("江苏省", "苏州市"),
+      new City("湖北省", "武汉市"),
+      new City("湖北省", "黄石市"),
+      new City("四川省", "成都市"),
+      new City("四川省", "自贡市"),
+      new City("陕西省", "西安市"),
+      new City("陕西省", "铜川市"),
+      new City("河北省", "石家庄市"),
+      new City("河北省", "唐山市"),
+      new City("山西省", "太原市"),
+      new City("山西省", "大同市"),
+  };
+
+  private static String[] items = {
+      "AAA", "BBB", "CCC", "DDD", "EEE",
+      "FFF", "GGG", "HHH", "III", "JJJ",
+      "KKK", "LLL", "MMM", "NNN", "OOO",
+      "PPP", "QQQ", "RRR", "SSS", "TTT",
+      "UUU", "VVV", "WWW", "XXX", "YYY", "ZZZ"
+  };
+
 
   /**
    * 保留两位小数
@@ -51,7 +83,7 @@ public class KeyValueGenerator {
   public static String[] randomStringArray() {
     String[] array = new String[ThreadLocalRandom.current().nextInt(ARRAY_MAX_LENGTH)];
     for (int i = 0; i < array.length; i++) {
-      array[i] = randomStringValue(3, SHORT_CHARS);
+      array[i] = items[ThreadLocalRandom.current().nextInt(items.length)];
     }
     return array;
   }
@@ -145,7 +177,7 @@ public class KeyValueGenerator {
         case StringArray:
           JSONArray strArray = new JSONArray();
           for (int i = 0; i < ThreadLocalRandom.current().nextInt(ARRAY_MAX_LENGTH); i++) {
-            strArray.put(randomStringValue(3, SHORT_CHARS));
+            strArray.put(items[ThreadLocalRandom.current().nextInt(items.length)]);
           }
           return strArray.toString();
         case NumberArray:
@@ -161,8 +193,11 @@ public class KeyValueGenerator {
           }
           return boolArray.toString();
         case Json:
+          City city = cities[ThreadLocalRandom.current().nextInt(cities.length)];
           JSONObject jsonObject = new JSONObject();
-          jsonObject.put(randomStringValue(2, SHORT_CHARS), randomStringValue(10));
+          jsonObject.put("value", randomStringValue(3, SHORT_CHARS));
+          jsonObject.put("province", city.province);
+          jsonObject.put("city", city.city);
           return jsonObject.toString();
         default:
           return randomStringValue(10);
@@ -171,6 +206,14 @@ public class KeyValueGenerator {
       log.error("randomValue with exception: {}, type: {}", e.getMessage(), dataTypeEnum);
     }
     return "";
+  }
+
+  @AllArgsConstructor
+  static class City {
+
+    private String province;
+
+    private String city;
   }
 
 }
