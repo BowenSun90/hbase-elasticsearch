@@ -12,11 +12,11 @@ import lombok.Getter;
 public enum DataTypeEnum {
 
   //
-  String("str_", "string", false),
+  String("str_", "keyword", false),
   Number("num_", "double", false),
   Date("date_", "date", false),
   Bool("bool_", "boolean", false),
-  StringArray("str_array_", "string", true),
+  StringArray("str_array_", "keyword", true),
   NumberArray("num_array_", "double", true),
   BoolArray("bool_array_", "boolean", true),
   Json("json_", "object", false);

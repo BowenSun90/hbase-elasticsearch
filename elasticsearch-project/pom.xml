@@ -16,7 +16,8 @@
   </parent>
 
   <properties>
-    <elastic.version>5.5.1</elastic.version>
+    <!--<elastic.version>5.5.1</elastic.version>-->
+    <elastic.version>6.3.2</elastic.version>
   </properties>
 
   <dependencies>

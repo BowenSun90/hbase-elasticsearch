@@ -5,6 +5,7 @@ import com.alex.space.elastic.utils.ElasticUtils;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.common.StopWatch;
+import org.elasticsearch.common.xcontent.XContentBuilder;
 
 /**
  * ElasticSearch insert code
@@ -25,7 +26,7 @@ public class ElasticInsert extends BaseElasticAction {
 
     int avgTime = 0;
     for (int i = maxOffset; i < maxOffset + insertSize; i++) {
-      List<String> jsonData = DataFactory.generateDocumentList(batchSize);
+      List<XContentBuilder> jsonData = DataFactory.generateDocumentList(batchSize);
       stopWatch.start();
 
       ElasticUtils.bulkInsert(indexName, typeName, jsonData, i);

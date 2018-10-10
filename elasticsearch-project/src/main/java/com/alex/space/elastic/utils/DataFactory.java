@@ -23,9 +23,9 @@ public class DataFactory {
    *
    * @param batchSize batch size
    */
-  public static List<String> generateDocumentList(int batchSize) {
+  public static List<XContentBuilder> generateDocumentList(int batchSize) {
 
-    List<String> list = new ArrayList<>();
+    List<XContentBuilder> list = new ArrayList<>();
 
     for (int i = 0; i < batchSize; i++) {
       try {
@@ -41,7 +41,7 @@ public class DataFactory {
   /**
    * 生成随机文档
    */
-  private static String generateRandomDoc() throws IOException {
+  private static XContentBuilder generateRandomDoc() throws IOException {
     // 每次随机插入列的数量，10～20随机
     int columnNum = ThreadLocalRandom.current().nextInt(10, 20);
 
@@ -99,7 +99,7 @@ public class DataFactory {
     }
     builder.endObject();
 
-    return jsonBuild.string();
+    return jsonBuild;
   }
 
 }

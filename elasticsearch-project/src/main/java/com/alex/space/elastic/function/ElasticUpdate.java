@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.common.StopWatch;
+import org.elasticsearch.common.xcontent.XContentBuilder;
 
 /**
  * ElasticSearch update code
@@ -27,7 +28,7 @@ public class ElasticUpdate extends BaseElasticAction {
 
     int avgTime = 0;
     for (int i = 0; i < maxOffset; i++) {
-      List<String> jsonData = DataFactory.generateDocumentList(batchSize);
+      List<XContentBuilder> jsonData = DataFactory.generateDocumentList(batchSize);
       stopWatch.start();
 
       ElasticUtils.bulkUpdate(indexName, typeName, jsonData,

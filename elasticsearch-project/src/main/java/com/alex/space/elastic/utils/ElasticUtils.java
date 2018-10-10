@@ -23,7 +23,7 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.common.xcontent.XContentType;
@@ -55,7 +55,7 @@ public class ElasticUtils {
 
     //创建client
     client = new PreBuiltTransportClient(settings).addTransportAddress(
-        new InetSocketTransportAddress(
+        new TransportAddress(
             InetAddress.getByName(elasticConfig.getProperty(ElasticConstants.ES_NODE_IP)),
             elasticConfig.getIntProperty(ElasticConstants.ES_NODE_PORT)));
   }
@@ -120,17 +120,24 @@ public class ElasticUtils {
         .startObject("properties");
 
     for (DataTypeEnum dataTypeEnum : DataTypeEnum.values()) {
-      int length = dataTypeEnum == DataTypeEnum.Json ? 0 : 5;
+      int length = dataTypeEnum == DataTypeEnum.Json ?
+          1 : 5;
+//          CommonConstants.JSON_MAX_NUMBER : CommonConstants.COLUMN_MAX_NUMBER;
       for (int i = 0; i < length; i++) {
         String field = KeyValueGenerator.generateKey(dataTypeEnum, i);
-        mapping.startObject(field)
-            .field("type", dataTypeEnum.getEsType());
+        if (dataTypeEnum == DataTypeEnum.Json) {
+          mapping.startObject(field)
+                .startObject("properties")
+                  .startObject("province").field("type", "keyword").endObject()
+                  .startObject("city").field("type", "keyword").endObject()
+                .endObject()
+              .endObject();
 
-        if (dataTypeEnum == DataTypeEnum.String || dataTypeEnum == DataTypeEnum.StringArray) {
-          mapping.field("index", "not_analyzed");
+        } else {
+          mapping.startObject(field)
+              .field("type", dataTypeEnum.getEsType())
+              .endObject();
         }
-
-        mapping.endObject();
       }
     }
 
@@ -181,10 +188,11 @@ public class ElasticUtils {
    * @param records 插入记录
    * @param offset 插入起始offset
    */
-  public static void bulkInsert(String index, String type, List<String> records, int offset) {
+  public static void bulkInsert(String index, String type, List<XContentBuilder> records,
+      int offset) {
     BulkRequestBuilder bulkRequest = client.prepareBulk();
 
-    for (String jsonData : records) {
+    for (XContentBuilder jsonData : records) {
       String id = String.valueOf(offset++);
       bulkRequest.add(client.prepareIndex(index, type, id).setSource(jsonData, XContentType.JSON));
     }
@@ -201,10 +209,11 @@ public class ElasticUtils {
    * @param records 插入记录
    * @param offset 更新最大offset
    */
-  public static void bulkUpdate(String index, String type, List<String> records, int offset) {
+  public static void bulkUpdate(String index, String type, List<XContentBuilder> records,
+      int offset) {
     BulkRequestBuilder bulkRequest = client.prepareBulk();
 
-    for (String jsonData : records) {
+    for (XContentBuilder jsonData : records) {
       String id = String.valueOf(offset++);
       bulkRequest.add(client.prepareUpdate(index, type, id).setDoc(jsonData, XContentType.JSON));
     }
