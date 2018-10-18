@@ -1,32 +1,31 @@
 package com.alex.space.flink.elasticsearch
 
+import com.alex.space.flink.connector.{ElasticsearchSinkFunction, RequestIndexer}
 import org.apache.flink.api.common.functions.RuntimeContext
-import org.elasticsearch.action.index.IndexRequest
-import org.elasticsearch.client.Requests
-import org.elasticsearch.common.xcontent.XContentType
-import org.slf4j.LoggerFactory
+import org.elasticsearch.action.update.UpdateRequest
+import org.elasticsearch.common.xcontent.XContentBuilder
 
 
 /**
   * @author Alex
   *         Created by Alex on 2018/9/14.
   */
-class ElasticSearchSinker(val indexName: String, val typeName: String) extends ElasticsearchSinkFunction[(String, String)] {
+class ElasticSearchSinker(val indexName: String, val typeName: String)
+  extends ElasticsearchSinkFunction[(String, XContentBuilder)] {
 
-  private val LOG = LoggerFactory.getLogger(classOf[ElasticSearchSinker])
+  override def process(element: (String, XContentBuilder), ctx: RuntimeContext, requestIndexer: RequestIndexer): Unit = {
+    requestIndexer.add(createUpdateRequest(element))
+  }
 
-  def createIndexRequest(element: (String, String)): IndexRequest = {
-    LOG.debug("create index request " + element)
-    Requests.indexRequest
-      .index(indexName)
+  def createUpdateRequest(element: (String, XContentBuilder)): UpdateRequest = {
+    val updateRequest = new UpdateRequest
+    updateRequest.index(indexName)
       .`type`(typeName)
       .id(element._1)
-      .source(element._2, XContentType.JSON)
-  }
+      .doc(element._2)
+      .docAsUpsert(true)
 
-  override def process(element: (String, String), ctx: RuntimeContext, requestIndexer: RequestIndexer): Unit = {
-    requestIndexer.add(createIndexRequest(element))
+    updateRequest
   }
-
 }
 
