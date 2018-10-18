@@ -27,32 +27,32 @@ public class ElasticInit {
       throws IOException, ParseException, InterruptedException {
 
     Options options = new Options();
-    options.addOption("index", "indexName", false, "index name, default: test_table");
-    options.addOption("type", "typeName", false, "type name, default: d");
-    options.addOption("offset", "maxOffset", false, "max offset, max is 99999999, default: 1");
-    options.addOption("itn", "insertThreadNum", false, "insert thread number, default: 1");
-    options.addOption("utn", "updateThreadNum", false, "update thread number, default: 1");
-    options.addOption("stn", "selectThreadNum", false, "select thread number, default: 1");
-    options.addOption("is", "insertSize", false, "insert record size, default: 100000");
-    options.addOption("us", "updateSize", false, "update record size, default: 100000");
-    options.addOption("ss", "selectSize", false, "select record size, default: 100000");
-    options.addOption("batch", "batchSize", false, "batch record size, default: 1000");
-    options.addOption("delete", "deleteExist", false, "delete exist index, default: false");
+    options.addOption("index", "indexName", true, "index name, default: test_table");
+    options.addOption("type", "typeName", true, "type name, default: d");
+    options.addOption("offset", "maxOffset", true, "max offset, max is 99999999, default: 1");
+    options.addOption("itn", "insertThreadNum", true, "insert thread number, default: 1");
+    options.addOption("utn", "updateThreadNum", true, "update thread number, default: 1");
+    options.addOption("stn", "selectThreadNum", true, "select thread number, default: 1");
+    options.addOption("is", "insertSize", true, "insert record size, default: 100000");
+    options.addOption("us", "updateSize", true, "update record size, default: 100000");
+    options.addOption("ss", "selectSize", true, "select record size, default: 100000");
+    options.addOption("batch", "batchSize", true, "batch record size, default: 1000");
+    options.addOption("delete", "deleteExist", true, "delete exist index, default: false");
 
     CommandLineParser parser = new DefaultParser();
     CommandLine cmd = parser.parse(options, args);
 
     // 参数初始化
-    String indexName = cmd.getOptionValue("index", "test_table");
+    String indexName = cmd.getOptionValue("index", "c_trait");
     String typeName = cmd.getOptionValue("type", "d");
     int offset = Integer.parseInt(cmd.getOptionValue("offset", "1"));
     if (offset > CommonConstants.MAX_OFFSET) {
       log.error("Offset out of bounds, max offset is 99999999");
     }
 
-    int insertThreadNum = Integer.parseInt(cmd.getOptionValue("itn", "1"));
-    int updateThreadNum = Integer.parseInt(cmd.getOptionValue("utn", "1"));
-    int selectThreadNum = Integer.parseInt(cmd.getOptionValue("stn", "1"));
+    int insertThreadNum = Integer.parseInt(cmd.getOptionValue("itn", "0"));
+    int updateThreadNum = Integer.parseInt(cmd.getOptionValue("utn", "0"));
+    int selectThreadNum = Integer.parseInt(cmd.getOptionValue("stn", "0"));
 
     int insertSize = Integer.parseInt(cmd.getOptionValue("is", "100000"));
     int updateSize = Integer.parseInt(cmd.getOptionValue("us", "100000"));

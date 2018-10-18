@@ -1,5 +1,6 @@
 package com.alex.space.elastic.utils;
 
+import com.alex.space.common.CommonConstants;
 import com.alex.space.common.DataTypeEnum;
 import com.alex.space.common.KeyValueGenerator;
 import com.alex.space.elastic.config.ElasticConfig;
@@ -121,8 +122,7 @@ public class ElasticUtils {
 
     for (DataTypeEnum dataTypeEnum : DataTypeEnum.values()) {
       int length = dataTypeEnum == DataTypeEnum.Json ?
-          1 : 5;
-//          CommonConstants.JSON_MAX_NUMBER : CommonConstants.COLUMN_MAX_NUMBER;
+          CommonConstants.JSON_MAX_NUMBER : CommonConstants.COLUMN_MAX_NUMBER;
       for (int i = 0; i < length; i++) {
         String field = KeyValueGenerator.generateKey(dataTypeEnum, i);
         if (dataTypeEnum == DataTypeEnum.Json) {
