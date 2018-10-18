@@ -24,8 +24,6 @@
     <encoding>UTF-8</encoding>
     <scala.binary.version>2.11</scala.binary.version>
     <scala.build.version>2.11.7</scala.build.version>
-    <flink.version>1.5.3</flink.version>
-    <elastic.version>5.5.1</elastic.version>
   </properties>
 
   <dependencies>
@@ -49,6 +47,18 @@
       <artifactId>flink-clients_${scala.binary.version}</artifactId>
       <version>${flink.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
@@ -62,6 +72,49 @@
           <source>${maven.compiler.source}</source>
           <target>${maven.compiler.target}</target>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.2.0</version>
+        <configuration>
+          <createDependencyReducedPom>false</createDependencyReducedPom>
+        </configuration>
+        <executions>
+          <!-- Run shade goal on package phase -->
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <relocations>
+                <relocation>
+                  <pattern>org.apache.commons.cli</pattern>
+                  <shadedPattern>org.shaded.apache.commons.cli</shadedPattern>
+                </relocation>
+              </relocations>
+              <artifactSet>
+                <excludes>
+                  <exclude>org.apache.flink:force-shading</exclude>
+                  <exclude>com.google.code.findbugs:jsr305</exclude>
+                </excludes>
+              </artifactSet>
+              <filters>
+                <filter>
+                  <!-- Do not copy the signatures in the META-INF folder.
+                  Otherwise, this might cause SecurityExceptions when using the JAR. -->
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <exclude>META-INF/*.SF</exclude>
+                    <exclude>META-INF/*.DSA</exclude>
+                    <exclude>META-INF/*.RSA</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

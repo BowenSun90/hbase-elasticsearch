@@ -1,4 +1,4 @@
-package com.alex.space.connector;
+package com.alex.space.flink.connector;
 
 /**
  * @author Alex Created by Alex on 2018/9/14.

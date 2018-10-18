@@ -1,9 +1,10 @@
-package com.alex.space.connector;
+package com.alex.space.flink.connector;
 
 import org.elasticsearch.action.ActionRequest;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.update.UpdateRequest;
 
 /**
  * @author Alex Created by Alex on 2018/9/14.
@@ -23,6 +24,8 @@ public class BulkProcessorIndexer implements RequestIndexer {
         this.bulkProcessor.add((IndexRequest) actionRequest);
       } else if (actionRequest instanceof DeleteRequest) {
         this.bulkProcessor.add((DeleteRequest) actionRequest);
+      } else if (actionRequest instanceof UpdateRequest) {
+        this.bulkProcessor.add((UpdateRequest) actionRequest);
       }
     }
   }

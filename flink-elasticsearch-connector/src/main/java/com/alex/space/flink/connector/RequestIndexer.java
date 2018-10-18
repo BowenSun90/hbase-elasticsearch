@@ -1,4 +1,4 @@
-package com.alex.space.connector;
+package com.alex.space.flink.connector;
 
 import java.io.Serializable;
 import org.elasticsearch.action.ActionRequest;

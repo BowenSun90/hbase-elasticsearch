@@ -15,10 +15,12 @@
     <scala.binary.version>2.11</scala.binary.version>
     <scala.build.version>2.11.12</scala.build.version>
     <lombok.version>1.16.18</lombok.version>
+    <netty.version>4.1.29.Final</netty.version>
     <slf4j.version>1.7.5</slf4j.version>
     <log4j.version>1.2.17</log4j.version>
     <hbase.version>1.2.0-cdh5.12.2</hbase.version>
     <flink.version>1.6.1</flink.version>
+    <elastic.version>6.3.2</elastic.version>
     <commons.cli.version>1.4</commons.cli.version>
     <commons.lang.version>3.8</commons.lang.version>
     <compile.version>1.8</compile.version>

@@ -2,7 +2,8 @@ package com.alex.space
 
 import java.net.{InetAddress, InetSocketAddress}
 
-import com.alex.space.connector.{ElasticSearchOutputFormat, ElasticsearchSinkFunction, RequestIndexer}
+import com.alex.space.connector.{ElasticSearchOutputFormat, RequestIndexer}
+import com.alex.space.flink.connector.{ElasticSearchOutputFormat, ElasticsearchSinkFunction, RequestIndexer}
 import org.apache.flink.api.common.functions.RuntimeContext
 import org.apache.flink.api.scala.{DataSet, ExecutionEnvironment, _}
 import org.elasticsearch.action.index.IndexRequest

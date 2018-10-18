@@ -2,8 +2,9 @@ package com.alex.space.flink
 
 import java.net.{InetAddress, InetSocketAddress}
 
-import com.alex.space.connector.{ElasticSearchOutputFormat, ElasticsearchSinkFunction, RequestIndexer}
+import com.alex.space.connector.{ElasticSearchOutputFormat, RequestIndexer}
 import com.alex.space.flink.config.Configable
+import com.alex.space.flink.connector.{ElasticSearchOutputFormat, ElasticsearchSinkFunction, RequestIndexer}
 import com.alex.space.flink.core.HBaseTableInputFormat
 import org.apache.flink.api.common.functions.RuntimeContext
 import org.apache.flink.api.scala.{ExecutionEnvironment, _}
@@ -46,7 +47,7 @@ object HBaseToEsConnector extends Configable {
           row.getField(0).toString
         }
       )
-      .output(new ElasticSearchOutputFormat[String](config, transports, new ElasticsearchSinkFunction[String] {
+      .output(new ElasticsearchOutputFormat[String](config, transports, new ElasticsearchSinkFunction[String] {
         def createIndexRequest(element: String): IndexRequest = {
 
           Requests.indexRequest.index("test_table2").`type`("d").id(element).source("{\"age\": \"20\"}", XContentType.JSON)
