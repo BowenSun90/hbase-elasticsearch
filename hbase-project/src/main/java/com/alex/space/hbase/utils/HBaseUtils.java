@@ -365,6 +365,7 @@ public class HBaseUtils {
 
       Table table = connection.getTable(name);
       Scan scan = new Scan();
+      scan.setBatch(1000);
       scan.addFamily(Bytes.toBytes(cf));
       ResultScanner rs = table.getScanner(scan);
 
@@ -372,11 +373,17 @@ public class HBaseUtils {
       int sampleRows = 0;
       int sampleCols = 0;
       for (Result result : rs) {
+        rows++;
         if (rows % 500 == 0) {
           sampleRows++;
           sampleCols += result.rawCells().length;
+
+          if (sampleRows % 10 == 0) {
+            log.info("Scan 5000 rows, avg time: {}s", stopWatch.getTime() / 1000.0);
+            stopWatch.reset();
+            stopWatch.start();
+          }
         }
-        rows++;
       }
 
       table.close();

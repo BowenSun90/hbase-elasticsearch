@@ -35,8 +35,7 @@ public class DataFactory {
       values[j] = KeyValueGenerator.randomValue(dataTypeEnum);
     }
     columns[columnNum - 1] = HBaseConstants.DEFAULT_UPDATE_TIME;
-    SimpleDateFormat sdf = new SimpleDateFormat(CommonConstants.DATE_FORMAT);
-    values[columnNum - 1] = sdf.format(KeyValueGenerator.randomDateValue());
+    values[columnNum - 1] = String.valueOf(KeyValueGenerator.randomDateValue().getTime());
 
     // 生成Rowkey
     String rowKey = RowKeyUtils.buildNumberRowkey(offset);

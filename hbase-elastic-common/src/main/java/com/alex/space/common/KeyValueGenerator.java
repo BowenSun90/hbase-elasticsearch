@@ -1,7 +1,6 @@
 package com.alex.space.common;
 
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -172,8 +171,7 @@ public class KeyValueGenerator {
         case Bool:
           return String.valueOf(randomBoolValue());
         case Date:
-          SimpleDateFormat sdf = new SimpleDateFormat(CommonConstants.DATE_FORMAT);
-          return sdf.format(randomDateValue());
+          return String.valueOf(randomDateValue().getTime());
         case StringArray:
           JSONArray strArray = new JSONArray();
           for (int i = 0; i < ThreadLocalRandom.current().nextInt(ARRAY_MAX_LENGTH); i++) {
