@@ -64,6 +64,8 @@ public class HBaseUtils {
 
   private static HBaseUtils instance = null;
 
+  protected static final long memStoreFlushSize = 256 * 1024 * 1024;
+
   /**
    * Init HBase connection
    */
@@ -146,6 +148,23 @@ public class HBaseUtils {
 
     admin.close();
   }
+
+  public void createTable(String name, String columnFamily, int regionNum) throws IOException {
+    Admin admin = connection.getAdmin();
+    TableName tableName = TableName.valueOf(name);
+    byte[][] splitKeys = HexStringSplitter.split(regionNum);
+    boolean existTable = admin.isTableAvailable(tableName);
+    if (!existTable) {
+      HTableDescriptor hTableDescriptor = new HTableDescriptor(tableName);
+      hTableDescriptor.setMemStoreFlushSize(memStoreFlushSize);
+      hTableDescriptor.setCompactionEnabled(false);
+      hTableDescriptor.addFamily(new HColumnDescriptor(Bytes.toBytes(columnFamily)));
+      admin.createTable(hTableDescriptor, splitKeys);
+    } else {
+      log.warn("HBase table {} exits", tableName.getName());
+    }
+  }
+
 
   /**
    * Drop table
@@ -361,11 +380,11 @@ public class HBaseUtils {
     try {
       StopWatch stopWatch = new StopWatch();
       stopWatch.start();
+      long start = System.currentTimeMillis();
       TableName name = TableName.valueOf(tableName);
 
       Table table = connection.getTable(name);
       Scan scan = new Scan();
-      scan.setBatch(1000);
       scan.addFamily(Bytes.toBytes(cf));
       ResultScanner rs = table.getScanner(scan);
 
@@ -373,24 +392,19 @@ public class HBaseUtils {
       int sampleRows = 0;
       int sampleCols = 0;
       for (Result result : rs) {
-        rows++;
         if (rows % 500 == 0) {
           sampleRows++;
           sampleCols += result.rawCells().length;
-
-          if (sampleRows % 10 == 0) {
-            log.info("Scan 5000 rows, avg time: {}s", stopWatch.getTime() / 1000.0);
-            stopWatch.reset();
-            stopWatch.start();
-          }
         }
+        rows++;
       }
 
       table.close();
       stopWatch.stop();
 
+      long end = System.currentTimeMillis();
       log.info("Total rows: {}, avg columns: {}, time: {}s",
-          rows, sampleCols / sampleRows, stopWatch.getTime() / 1000.0);
+          rows, sampleCols / sampleRows, (end - start) / 1000.0);
     } catch (IOException e) {
       e.printStackTrace();
     }

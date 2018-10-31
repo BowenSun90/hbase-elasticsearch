@@ -1,5 +1,6 @@
 package com.alex.space.hbase.utils;
 
+import com.alex.space.common.CommonConstants;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -19,7 +20,7 @@ public class RowKeyUtils {
    * @return rowkey
    */
   public static String buildNumberRowkey(int num) {
-    String rowkey = String.format("%08d", num);
+    String rowkey = String.format(CommonConstants.ROWKEY_FORMAT, num);
     StringBuilder sb = new StringBuilder(rowkey);
     rowkey = sb.reverse().toString();
 

@@ -7,10 +7,19 @@ package com.alex.space.common;
  */
 public interface CommonConstants {
 
+//  int MAX_OFFSET = 99999999;
+//  String ROWKEY_FORMAT = "%08d";
+
+
   /**
    * Max offset
    */
-  int MAX_OFFSET = 99999999;
+  int MAX_OFFSET = 999999999;
+
+  /**
+   * Rowkey format
+   */
+  String ROWKEY_FORMAT = "%09d";
 
   /**
    * 同一类型的列数量

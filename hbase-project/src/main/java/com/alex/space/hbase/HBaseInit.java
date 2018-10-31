@@ -73,7 +73,7 @@ public class HBaseInit {
     byte[][] regions = new byte[regionNum][1];
     for (int i = 1; i < regionNum; i++) {
       int split = CommonConstants.MAX_OFFSET / regionNum * i;
-      String splitKey = String.format("%08d", split);
+      String splitKey = String.format(CommonConstants.ROWKEY_FORMAT, split);
       regions[i] = Bytes.toBytes(splitKey);
     }
 
