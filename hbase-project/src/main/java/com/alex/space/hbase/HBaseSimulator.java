@@ -32,6 +32,8 @@ public class HBaseSimulator {
     options.addOption("itn", "insertThreadNum", true, "insert thread number, default: 1");
     options.addOption("is", "insertSize", true, "insert record size, default: 100000");
     options.addOption("batch", "batchSize", true, "batch record size, default: 1000");
+    options.addOption("maxColNum", "maxColumnNum", true, "update max column number, default: 50");
+    options.addOption("minColNum", "minColumnNum", true, "update min column number, default: 30");
 
     CommandLineParser parser = new DefaultParser();
     CommandLine cmd = parser.parse(options, args);
@@ -49,11 +51,16 @@ public class HBaseSimulator {
     int insertSize = Integer.parseInt(cmd.getOptionValue("is", "100000"));
     int batchSize = Integer.parseInt(cmd.getOptionValue("batch", "1000"));
 
+    int maxColNum = Integer.parseInt(cmd.getOptionValue("maxColNum", "50"));
+    int minColNum = Integer.parseInt(cmd.getOptionValue("minColNum", "30"));
+
     log.info("Insert or update table: {}, column family: {}, region number: {} . \n"
             + "insertSize: {} . \n"
             + "insertThreadNum: {} . \n"
-            + "batchSize: {}, offset: {}",
-        tableName, cf, regionNum, insertSize, insertThreadNum, batchSize, offset);
+            + "batchSize: {}, offset: {} \n"
+            + "maxColNum: {}, minColNum: {}",
+        tableName, cf, regionNum, insertSize, insertThreadNum, batchSize, offset, maxColNum,
+        minColNum);
 
     // 初始化测试表，如果不存在创建
     // Rowkey预分区，根据RegionNum，将MAX_ID平均分成RegionNum段
@@ -76,7 +83,8 @@ public class HBaseSimulator {
       for (int i = 0; i < insertThreadNum; i++) {
         int subInsertSize = insertSize / insertThreadNum;
         int startOffset = offset + subInsertSize * i;
-        insertPool.submit(new HBaseInsertBiz(tableName, cf, startOffset, subInsertSize, batchSize));
+        insertPool.submit(new HBaseInsertBiz(tableName, cf, startOffset, subInsertSize, batchSize,
+            maxColNum, minColNum));
       }
       insertPool.shutdown();
     }

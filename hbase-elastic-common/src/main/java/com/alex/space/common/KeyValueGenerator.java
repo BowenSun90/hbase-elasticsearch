@@ -46,6 +46,35 @@ public class KeyValueGenerator {
       new City("河北省", "唐山市"),
       new City("山西省", "太原市"),
       new City("山西省", "大同市"),
+      new City("广东省", "汕头市"),
+      new City("广东省", "韶关市"),
+      new City("辽宁省", "丹东市"),
+      new City("辽宁省", "锦州市"),
+      new City("辽宁省", "阜新市"),
+      new City("辽宁省", "葫芦岛市"),
+      new City("江苏省", "盐城市"),
+      new City("江苏省", "宿迁市"),
+      new City("浙江省", "嘉兴市"),
+      new City("浙江省", "湖州市"),
+      new City("福建省", "福州市"),
+      new City("福建省", "厦门市"),
+      new City("广西壮族自治区", "柳州"),
+      new City("广西壮族自治区", "梧州"),
+      new City("广西壮族自治区", "玉林"),
+      new City("贵州省", "六盘水市"),
+      new City("贵州省", "安顺市"),
+      new City("贵州省", "黔南布依族苗族自治州"),
+      new City("云南省", "昆明市"),
+      new City("西藏自治区", "拉萨市"),
+      new City("西藏自治区", "阿里地区"),
+      new City("甘肃省", "兰州市"),
+      new City("甘肃省", "天水市"),
+      new City("甘肃省", "陇南市"),
+      new City("青海省", "西宁市"),
+      new City("新疆维吾尔族自治区", "乌鲁木齐市"),
+      new City("新疆维吾尔族自治区", "克拉玛依市"),
+      new City("新疆维吾尔族自治区", "阿拉尔市"),
+      new City("新疆维吾尔族自治区", "阿拉尔市")
   };
 
   private static String[] items = {
@@ -53,7 +82,13 @@ public class KeyValueGenerator {
       "FFF", "GGG", "HHH", "III", "JJJ",
       "KKK", "LLL", "MMM", "NNN", "OOO",
       "PPP", "QQQ", "RRR", "SSS", "TTT",
-      "UUU", "VVV", "WWW", "XXX", "YYY", "ZZZ"
+      "UUU", "VVV", "WWW", "XXX", "YYY",
+      "ZZZ", "aa", "bb", "cc", "dd", "ee",
+      "ff", "gg", "hh", "ii", "jj", "kk",
+      "ll", "mm", "nn", "oo", "pp", "qq",
+      "rr", "ss", "tt", "uu", "vv", "ww",
+      "xx", "yy", "zz", "abc", "def", "ghi",
+      "jkl", "mno", "pqr", "stu", "vw", "xyz"
   };
 
 
@@ -165,7 +200,7 @@ public class KeyValueGenerator {
 
       switch (dataTypeEnum) {
         case String:
-          return randomStringValue(ThreadLocalRandom.current().nextInt(5));
+          return randomStringValue(ThreadLocalRandom.current().nextInt(10));
         case Number:
           return String.valueOf(randomNumberValue());
         case Bool:
@@ -193,7 +228,7 @@ public class KeyValueGenerator {
         case Json:
           City city = cities[ThreadLocalRandom.current().nextInt(cities.length)];
           JSONObject jsonObject = new JSONObject();
-          jsonObject.put("value", randomStringValue(3, SHORT_CHARS));
+          jsonObject.put("value", randomStringValue(10, CHARS));
           jsonObject.put("province", city.province);
           jsonObject.put("city", city.city);
           return jsonObject.toString();

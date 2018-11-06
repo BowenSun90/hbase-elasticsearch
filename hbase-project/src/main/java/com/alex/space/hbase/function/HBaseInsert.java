@@ -15,8 +15,9 @@ import org.apache.commons.lang.time.StopWatch;
 @Slf4j
 public class HBaseInsert extends BaseHBaseAction {
 
-  public HBaseInsert(String tableName, String cf, int offset, int insertSize, int batchSize) {
-    super(tableName, cf, offset, insertSize, batchSize);
+  public HBaseInsert(String tableName, String cf, int offset, int insertSize, int batchSize,
+      int maxColNum, int minColNum) {
+    super(tableName, cf, offset, insertSize, batchSize, maxColNum, minColNum);
   }
 
   /**
@@ -49,8 +50,8 @@ public class HBaseInsert extends BaseHBaseAction {
 
           // 计算平均时常
           avgTime += stopWatch.getTime();
-          if (optCount % 50 == 0 && optCount != 0) {
-            log.info("Avg insert " + batchSize + " time: " + avgTime / 50.0 / 1000.0 + "s.");
+          if (optCount % 20 == 0 && optCount != 0) {
+            log.info("Avg insert " + batchSize + " time: " + avgTime / 20.0 / 1000.0 + "s.");
             avgTime = 0;
           }
           stopWatch = new StopWatch();
@@ -74,7 +75,7 @@ public class HBaseInsert extends BaseHBaseAction {
    * @param offset offset
    */
   protected BatchData generateBatchData(int offset) {
-    return DataFactory.generateBatchData(offset);
+    return DataFactory.generateBatchData(offset, minColNum, maxColNum);
   }
 
 }

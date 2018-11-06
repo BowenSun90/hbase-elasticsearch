@@ -12,8 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class HBaseInsertBiz extends HBaseInsert {
 
-  public HBaseInsertBiz(String tableName, String cf, int offset, int insertSize, int batchSize) {
-    super(tableName, cf, offset, insertSize, batchSize);
+  public HBaseInsertBiz(String tableName, String cf, int offset, int insertSize, int batchSize,
+      int maxColNum, int minColNum) {
+    super(tableName, cf, offset, insertSize, batchSize, maxColNum, minColNum);
   }
 
   /**

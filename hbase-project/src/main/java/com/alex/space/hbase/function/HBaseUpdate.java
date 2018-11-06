@@ -16,8 +16,9 @@ import org.apache.commons.lang.time.StopWatch;
 @Slf4j
 public class HBaseUpdate extends BaseHBaseAction {
 
-  public HBaseUpdate(String tableName, String cf, int offset, int insertSize, int batchSize) {
-    super(tableName, cf, offset, insertSize, batchSize);
+  public HBaseUpdate(String tableName, String cf, int offset, int insertSize, int batchSize,
+      int maxColNum, int minColNum) {
+    super(tableName, cf, offset, insertSize, batchSize, maxColNum, minColNum);
   }
 
   /**
@@ -37,7 +38,7 @@ public class HBaseUpdate extends BaseHBaseAction {
       int optCount = 0;
       for (int i = 0; i < insertSize; i++) {
         int randomId = ThreadLocalRandom.current().nextInt(maxOffset);
-        BatchData batchData = DataFactory.generateBatchData(randomId);
+        BatchData batchData = DataFactory.generateBatchData(randomId, minColNum, maxColNum);
         batchDataList.add(batchData);
 
         // 批量插入
@@ -52,8 +53,8 @@ public class HBaseUpdate extends BaseHBaseAction {
 
           // 计算平均时常
           avgTime += stopWatch.getTime();
-          if (optCount % 50 == 0 && optCount != 0) {
-            log.info("Avg update " + batchSize + " time: " + avgTime / 50.0 / 1000.0 + "s.");
+          if (optCount % 20 == 0 && optCount != 0) {
+            log.info("Avg update " + batchSize + " time: " + avgTime / 20.0 / 1000.0 + "s.");
             avgTime = 0;
           }
           stopWatch = new StopWatch();

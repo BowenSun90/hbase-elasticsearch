@@ -13,11 +13,13 @@ public enum DataTypeEnum {
 
   //
   String("str_", "keyword", false),
-  Number("num_", "long", false),
+//  Number("num_", "long", false),
+  Number("num_", "float", false),
   Date("date_", "date", false),
   Bool("bool_", "boolean", false),
   StringArray("str_array_", "keyword", true),
-  NumberArray("num_array_", "long", true),
+//  NumberArray("num_array_", "long", true),
+  NumberArray("num_array_", "float", true),
   BoolArray("bool_array_", "boolean", true),
   Json("json_", "object", false);
 

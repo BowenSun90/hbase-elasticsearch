@@ -38,20 +38,22 @@ public class HBaseInit {
     options.addOption("us", "updateSize", true, "update record size, default: 100000");
     options.addOption("ss", "selectSize", true, "select record size, default: 100000");
     options.addOption("batch", "batchSize", true, "batch record size, default: 1000");
+    options.addOption("maxColNum", "maxColumnNum", true, "update max column number, default: 50");
+    options.addOption("minColNum", "minColumnNum", true, "update min column number, default: 30");
 
     CommandLineParser parser = new DefaultParser();
     CommandLine cmd = parser.parse(options, args);
 
     // 参数初始化
-    String tableName = cmd.getOptionValue("table", "c0_trait");
+    String tableName = cmd.getOptionValue("table", "trait_wx00000");
     String cf = cmd.getOptionValue("cf", "d");
     int regionNum = Integer.parseInt(cmd.getOptionValue("region", "100"));
     int offset = Integer.parseInt(cmd.getOptionValue("offset", "1"));
     if (offset > CommonConstants.MAX_OFFSET) {
-      log.error("Offset out of bounds, max offset is 99999999");
+      log.error("Offset out of bounds, max offset is {}", CommonConstants.MAX_OFFSET);
     }
 
-    int insertThreadNum = Integer.parseInt(cmd.getOptionValue("itn", "0"));
+    int insertThreadNum = Integer.parseInt(cmd.getOptionValue("itn", "5"));
     int updateThreadNum = Integer.parseInt(cmd.getOptionValue("utn", "0"));
     int selectThreadNum = Integer.parseInt(cmd.getOptionValue("stn", "0"));
 
@@ -61,12 +63,15 @@ public class HBaseInit {
 
     int batchSize = Integer.parseInt(cmd.getOptionValue("batch", "1000"));
 
+    int maxColNum = Integer.parseInt(cmd.getOptionValue("maxColNum", "50"));
+    int minColNum = Integer.parseInt(cmd.getOptionValue("minColNum", "30"));
+
     log.info("Insert or update table: {}, column family: {}, region number: {} . \n"
             + "insertSize: {}, updateSize: {}, selectSize: {} . \n"
             + "insertThreadNum: {}, updateThreadNum: {}, selectThreadNum: {} . \n"
-            + "batchSize: {}, offset: {}",
+            + "batchSize: {}, offset: {}, maxColNum: {}, minColNum: {}",
         tableName, cf, regionNum, insertSize, updateSize, selectSize,
-        insertThreadNum, updateThreadNum, selectThreadNum, batchSize, offset);
+        insertThreadNum, updateThreadNum, selectThreadNum, batchSize, offset, maxColNum, minColNum);
 
     // 初始化测试表，如果不存在创建
     // Rowkey预分区，根据RegionNum，将MAX_ID平均分成RegionNum段
@@ -87,7 +92,9 @@ public class HBaseInit {
       for (int i = 0; i < insertThreadNum; i++) {
         int subInsertSize = insertSize / insertThreadNum;
         int startOffset = offset + subInsertSize * i;
-        insertPool.submit(new HBaseInsert(tableName, cf, startOffset, subInsertSize, batchSize));
+        insertPool.submit(
+            new HBaseInsert(tableName, cf, startOffset, subInsertSize, batchSize,
+                maxColNum, minColNum));
       }
       insertPool.shutdown();
     }
@@ -96,7 +103,8 @@ public class HBaseInit {
       updatePool = Executors.newFixedThreadPool(updateThreadNum);
       for (int i = 0; i < updateThreadNum; i++) {
         int subUpdateSize = updateSize / updateThreadNum;
-        updatePool.submit(new HBaseUpdate(tableName, cf, offset, subUpdateSize, batchSize));
+        updatePool.submit(new HBaseUpdate(tableName, cf, offset, subUpdateSize, batchSize,
+            maxColNum, minColNum));
       }
       updatePool.shutdown();
     }

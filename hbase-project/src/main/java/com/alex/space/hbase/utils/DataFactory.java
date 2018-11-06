@@ -20,9 +20,9 @@ public class DataFactory {
    *
    * @param offset 生成Rowkey的offset
    */
-  public static BatchData generateBatchData(int offset) {
+  public static BatchData generateBatchData(int offset, int minColNum, int maxColNum) {
     // 每次随机插入列的数量，10～20随机
-    int columnNum = ThreadLocalRandom.current().nextInt(10, 20);
+    int columnNum = ThreadLocalRandom.current().nextInt(minColNum, maxColNum);
 
     String[] columns = new String[columnNum];
     String[] values = new String[columnNum];

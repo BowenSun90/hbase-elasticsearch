@@ -21,7 +21,7 @@ public class HBaseSelect extends BaseHBaseAction {
   private HBaseUtils hBaseUtils = HBaseUtils.getInstance();
 
   public HBaseSelect(String tableName, String cf, int offset, int insertSize, int batchSize) {
-    super(tableName, cf, offset, insertSize, batchSize);
+    super(tableName, cf, offset, insertSize, batchSize, 0, 0);
   }
 
   /**

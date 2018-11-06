@@ -14,6 +14,8 @@ public abstract class BaseHBaseAction implements Runnable {
   int maxOffset;
   int insertSize;
   int batchSize;
+  int maxColNum;
+  int minColNum;
 
   /**
    * 构造函数
@@ -25,12 +27,14 @@ public abstract class BaseHBaseAction implements Runnable {
    * @param batchSize 批量插入数量
    */
   BaseHBaseAction(String tableName, String cf, int maxOffset, int insertSize,
-      int batchSize) {
+      int batchSize, int maxColNum, int minColNum) {
     this.tableName = tableName;
     this.cf = cf;
     this.maxOffset = maxOffset;
     this.insertSize = insertSize;
     this.batchSize = batchSize;
+    this.maxColNum = maxColNum;
+    this.minColNum = minColNum;
   }
 
 
