@@ -3,6 +3,7 @@ package com.alex.space.hbase.utils;
 import com.alex.space.hbase.config.HBaseConfig;
 import com.alex.space.hbase.config.HBaseConstants;
 import com.alex.space.hbase.model.BatchData;
+import io.netty.util.internal.ThreadLocalRandom;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -391,10 +392,13 @@ public class HBaseUtils {
       int rows = 0;
       int sampleRows = 0;
       int sampleCols = 0;
+      int interval = ThreadLocalRandom.current().nextInt(500);
       for (Result result : rs) {
-        if (rows % 500 == 0) {
+        if (rows % interval == 0) {
           sampleRows++;
           sampleCols += result.rawCells().length;
+          log.info("Avg SampleCols: {}", sampleCols / (sampleRows * 1.0));
+          interval = ThreadLocalRandom.current().nextInt(1000, 5000);
         }
         rows++;
       }

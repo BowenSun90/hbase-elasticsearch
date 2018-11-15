@@ -127,10 +127,16 @@ public class ElasticUtils {
         String field = KeyValueGenerator.generateKey(dataTypeEnum, i);
         if (dataTypeEnum == DataTypeEnum.Json) {
           mapping.startObject(field)
-                .startObject("properties")
-                  .startObject("province").field("type", "keyword").endObject()
-                  .startObject("city").field("type", "keyword").endObject()
-                .endObject()
+              .startObject("properties")
+              .startObject("province").field("type", "keyword").endObject()
+              .startObject("city").field("type", "keyword").endObject()
+              .endObject()
+              .endObject();
+
+        } else if (dataTypeEnum == DataTypeEnum.Date) {
+          mapping.startObject(field)
+              .field("type", dataTypeEnum.getEsType())
+              .field("format", "yyyy-MM-dd HH:mm:ss")
               .endObject();
 
         } else {
